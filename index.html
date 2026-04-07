@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CÂN BẰNG PHẢN ỨNG OXI HÓA - KHỬ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        sub { font-weight: bold; font-size: 0.75rem; bottom: -0.2rem; }
+        .star-active { fill: currentColor; }
+        .star-inactive { fill: none; color: #e2e8f0; }
+        .animate-in { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <div>
+            <h1 class="text-3xl font-extrabold text-blue-600 tracking-tight uppercase">Cân bằng phản ứng Oxi hóa - Khử</h1>
+            <p class="text-slate-500 font-medium mt-1 uppercase tracking-wider">Hóa học ABC</p>
+        </div>
+        
+        <div class="mt-4 md:mt-0 flex items-center gap-4 bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span id="timer-display" class="text-2xl font-mono font-bold w-20 text-center">00:00</span>
+            </div>
+            <div class="flex gap-2">
+                <button id="timer-toggle" class="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-semibold shadow-md shadow-blue-200 hover:opacity-90 transition-all">Bắt đầu</button>
+                <button id="timer-reset" class="p-1.5 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="quiz-container" class="max-w-5xl mx-auto grid gap-6">
+        <!-- Các câu hỏi sẽ được render bằng JS -->
+    </div>
+
+    <div class="max-w-5xl mx-auto mt-12 text-center text-slate-400 text-sm pb-12">
+        <div class="flex flex-wrap justify-center gap-6 md:gap-10 mb-6" id="legend">
+            <!-- Chú thích sao -->
+        </div>
+        <p class="uppercase tracking-widest font-semibold opacity-70">© 2026 Hóa học ABC • Chuyên đề Oxi hóa - Khử</p>
+    </div>
+
+    <script>
+        const reactions = [
+            { id: 1, text: "Mg + O2 → MgO", coefficients: ["2", "1", "2"], difficulty: 1 },
+            { id: 2, text: "Al + HCl → AlCl3 + H2", coefficients: ["2", "6", "2", "3"], difficulty: 1 },
+            { id: 3, text: "Zn + H2SO4 (loãng) → ZnSO4 + H2", coefficients: ["1", "1", "1", "1"], difficulty: 1 },
+            { id: 4, text: "Cu + AgNO3 → Cu(NO3)2 + Ag", coefficients: ["1", "2", "1", "2"], difficulty: 1 },
+            { id: 5, text: "Fe + Cl2 → FeCl3", coefficients: ["2", "3", "2"], difficulty: 1 },
+            { id: 6, text: "Al + H2SO4 (loãng) → Al2(SO4)3 + H2", coefficients: ["2", "3", "1", "3"], difficulty: 2 },
+            { id: 7, text: "KMnO4 → K2MnO4 + MnO2 + O2", coefficients: ["2", "1", "1", "1"], difficulty: 2 },
+            { id: 8, text: "Fe + H2SO4 (đặc, nóng) → Fe2(SO4)3 + SO2 + H2O", coefficients: ["2", "6", "1", "3", "6"], difficulty: 2 },
+            { id: 9, text: "Mg + HNO3 (loãng) → Mg(NO3)2 + NO + H2O", coefficients: ["3", "8", "3", "2", "4"], difficulty: 2 },
+            { id: 10, text: "Cu + HNO3 (đặc) → Cu(NO3)2 + NO2 + H2O", coefficients: ["1", "4", "1", "2", "2"], difficulty: 2 },
+            { id: 11, text: "Fe3O4 + HNO3 → Fe(NO3)3 + NO + H2O", coefficients: ["3", "28", "9", "1", "14"], difficulty: 3 },
+            { id: 12, text: "Al + HNO3 → Al(NO3)3 + N2O + H2O", coefficients: ["8", "30", "8", "3", "15"], difficulty: 3 },
+            { id: 13, text: "Zn + HNO3 → Zn(NO3)2 + NH4NO3 + H2O", coefficients: ["4", "10", "4", "1", "3"], difficulty: 3 },
+            { id: 14, text: "FeS2 + O2 → Fe2O3 + SO2", coefficients: ["4", "11", "2", "8"], difficulty: 3 },
+            { id: 15, text: "KMnO4 + HCl → KCl + MnCl2 + Cl2 + H2O", coefficients: ["2", "16", "2", "2", "5", "8"], difficulty: 3 },
+            { id: 16, text: "FeS + HNO3 → Fe(NO3)3 + H2SO4 + NO + H2O", coefficients: ["1", "6", "1", "1", "3", "2"], difficulty: 4 },
+            { id: 17, text: "CuxSy + HNO3 → Cu(NO3)2 + H2SO4 + NO2 + H2O", coefficients: ["1", "2x+6y", "x", "y", "2x+6y", "x+3y"], difficulty: 4 },
+            { id: 18, text: "Fe + HNO3 → Fe(NO3)3 + NxOy + H2O", coefficients: ["5x-2y", "18x-6y", "5x-2y", "3", "9x-3y"], difficulty: 4 },
+            { id: 19, text: "As2S3 + HNO3 + H2O → H3AsO4 + H2SO4 + NO", coefficients: ["3", "28", "4", "6", "9", "28"], difficulty: 4 },
+            { id: 20, text: "P + NH4ClO4 → H3PO4 + N2 + Cl2 + H2O", coefficients: ["10", "6", "10", "3", "3", "14"], difficulty: 4 }
+        ];
+
+        let seconds = 0;
+        let timerInterval = null;
+
+        // Render Stars
+        function getStarsHtml(count) {
+            const colors = ['text-green-400', 'text-yellow-400', 'text-orange-400', 'text-red-500'];
+            const activeColor = colors[count - 1];
+            let html = '<div class="flex gap-0.5">';
+            for(let i = 0; i < 4; i++) {
+                const isFilled = i < count;
+                const colorClass = isFilled ? activeColor : 'text-slate-200';
+                html += `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="${isFilled ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="${colorClass}">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>`;
+            }
+            html += '</div>';
+            return html;
+        }
+
+        // Format Formula
+        function formatFormula(text) {
+            return text.split(' ').map(part => {
+                if(part === '+' || part === '→') return `<span class="px-1 text-slate-400 font-bold">${part}</span>`;
+                // Xử lý chỉ số dưới
+                const formatted = part.replace(/(\d+|[xy])/g, '<sub>$1</sub>');
+                return `<span class="whitespace-nowrap flex items-baseline">${formatted}</span>`;
+            }).join(' ');
+        }
+
+        // Main Render Quiz
+        const container = document.getElementById('quiz-container');
+        reactions.forEach((reaction, rIdx) => {
+            const card = document.createElement('div');
+            card.className = "bg-white rounded-2xl shadow-sm border border-slate-200 p-6 transition-all hover:shadow-md";
+            
+            let inputIdx = 0;
+            const formulaParts = reaction.text.split(' ').map((part, pIdx) => {
+                const isCompound = /^[A-Z(]/.test(part);
+                if(isCompound) {
+                    const currentIdx = inputIdx++;
+                    const formattedPart = part.replace(/(\d+|[xy])/g, '<sub>$1</sub>');
+                    return `
+                        <input type="text" id="input-${reaction.id}-${currentIdx}" placeholder="?" autocomplete="off"
+                               class="w-14 h-10 text-center border-2 border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all text-base font-bold mx-1">
+                        <span class="whitespace-nowrap flex items-baseline">${formattedPart}</span>
+                    `;
+                }
+                return `<span class="px-1 text-slate-400 font-bold">${part}</span>`;
+            }).join('');
+
+            card.innerHTML = `
+                <div class="flex justify-between items-center mb-6">
+                    <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-sm font-bold">Câu ${reaction.id}</span>
+                    ${getStarsHtml(reaction.difficulty)}
+                </div>
+                <div class="flex flex-wrap items-center gap-y-4 text-lg md:text-xl font-medium overflow-x-auto pb-4">
+                    ${formulaParts}
+                </div>
+                <div class="mt-4 flex flex-col md:flex-row items-center gap-4 border-t border-slate-100 pt-4">
+                    <button onclick="checkAnswer(${reaction.id})" 
+                            class="flex items-center gap-2 bg-slate-800 text-white px-8 py-2.5 rounded-xl font-bold hover:bg-slate-700 transition-all active:scale-95 w-full md:w-auto justify-center">
+                        Kiểm tra
+                    </button>
+                    <div id="result-${reaction.id}" class="hidden flex items-center gap-2 font-semibold animate-in"></div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        // Legend Render
+        const legend = document.getElementById('legend');
+        const labels = ["Cơ bản", "Trung bình", "Nâng cao", "HSG"];
+        labels.forEach((label, i) => {
+            const item = document.createElement('div');
+            item.className = "flex items-center gap-2";
+            item.innerHTML = `${getStarsHtml(i+1)} <span class="ml-1">${label}</span>`;
+            legend.appendChild(item);
+        });
+
+        // Timer Logic
+        const timerDisplay = document.getElementById('timer-display');
+        const timerToggle = document.getElementById('timer-toggle');
+        const timerReset = document.getElementById('timer-reset');
+
+        function updateTimer() {
+            seconds++;
+            const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const secs = (seconds % 60).toString().padStart(2, '0');
+            timerDisplay.innerText = `${mins}:${secs}`;
+        }
+
+        timerToggle.onclick = () => {
+            if(timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                timerToggle.innerText = "Bắt đầu";
+                timerToggle.className = "px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-semibold shadow-md shadow-blue-200 hover:opacity-90 transition-all";
+            } else {
+                timerInterval = setInterval(updateTimer, 1000);
+                timerToggle.innerText = "Dừng";
+                timerToggle.className = "px-4 py-1.5 bg-red-500 text-white rounded-lg text-sm font-semibold shadow-md shadow-red-200 hover:opacity-90 transition-all";
+            }
+        };
+
+        timerReset.onclick = () => {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            seconds = 0;
+            timerDisplay.innerText = "00:00";
+            timerToggle.innerText = "Bắt đầu";
+            timerToggle.className = "px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-semibold shadow-md shadow-blue-200 hover:opacity-90 transition-all";
+        };
+
+        // Check Answer Logic
+        window.checkAnswer = (id) => {
+            const reaction = reactions.find(r => r.id === id);
+            const resultDiv = document.getElementById(`result-${id}`);
+            let isCorrect = true;
+
+            reaction.coefficients.forEach((coef, idx) => {
+                const input = document.getElementById(`input-${id}-${idx}`);
+                const val = input.value.trim();
+                if(val === coef) {
+                    input.classList.remove('border-slate-200', 'border-red-400', 'bg-red-50', 'text-red-700');
+                    input.classList.add('border-green-500', 'bg-green-50', 'text-green-700');
+                } else {
+                    input.classList.remove('border-slate-200', 'border-green-500', 'bg-green-50', 'text-green-700');
+                    input.classList.add('border-red-400', 'bg-red-50', 'text-red-700');
+                    isCorrect = false;
+                }
+            });
+
+            resultDiv.classList.remove('hidden', 'text-green-600', 'text-red-500');
+            if(isCorrect) {
+                resultDiv.classList.add('text-green-600');
+                resultDiv.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <span>Chính xác!</span>
+                `;
+            } else {
+                resultDiv.classList.add('text-red-500');
+                resultDiv.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center gap-1">
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                            <span>Chưa đúng!</span>
+                        </div>
+                        <span class="text-slate-600 font-normal ml-2">Hệ số đúng: <span class="font-bold text-blue-600 tracking-widest">${reaction.coefficients.join(' : ')}</span></span>
+                    </div>
+                `;
+            }
+        };
+    </script>
+</body>
+</html>
