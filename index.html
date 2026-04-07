@@ -41,12 +41,12 @@
     </div>
 
     <div id="quiz-container" class="max-w-5xl mx-auto grid gap-6">
-        <!-- Các câu hỏi sẽ được render bằng JS -->
+        <!-- Questions injected by JS -->
     </div>
 
     <div class="max-w-5xl mx-auto mt-12 text-center text-slate-400 text-sm pb-12">
         <div class="flex flex-wrap justify-center gap-6 md:gap-10 mb-6" id="legend">
-            <!-- Chú thích sao -->
+            <!-- Legend stars -->
         </div>
         <p class="uppercase tracking-widest font-semibold opacity-70">© 2026 Hóa học ABC • Chuyên đề Oxi hóa - Khử</p>
     </div>
@@ -55,30 +55,29 @@
         const reactions = [
             { id: 1, text: "Mg + O2 → MgO", coefficients: ["2", "1", "2"], difficulty: 1 },
             { id: 2, text: "Al + HCl → AlCl3 + H2", coefficients: ["2", "6", "2", "3"], difficulty: 1 },
-            { id: 3, text: "Zn + H2SO4 (loãng) → ZnSO4 + H2", coefficients: ["1", "1", "1", "1"], difficulty: 1 },
+            { id: 3, text: "Zn + H2SO4 → ZnSO4 + H2", coefficients: ["1", "1", "1", "1"], difficulty: 1 },
             { id: 4, text: "Cu + AgNO3 → Cu(NO3)2 + Ag", coefficients: ["1", "2", "1", "2"], difficulty: 1 },
             { id: 5, text: "Fe + Cl2 → FeCl3", coefficients: ["2", "3", "2"], difficulty: 1 },
-            { id: 6, text: "Al + H2SO4 (loãng) → Al2(SO4)3 + H2", coefficients: ["2", "3", "1", "3"], difficulty: 2 },
+            { id: 6, text: "Al + H2SO4 → Al2(SO4)3 + H2", coefficients: ["2", "3", "1", "3"], difficulty: 2 },
             { id: 7, text: "KMnO4 → K2MnO4 + MnO2 + O2", coefficients: ["2", "1", "1", "1"], difficulty: 2 },
-            { id: 8, text: "Fe + H2SO4 (đặc, nóng) → Fe2(SO4)3 + SO2 + H2O", coefficients: ["2", "6", "1", "3", "6"], difficulty: 2 },
-            { id: 9, text: "Mg + HNO3 (loãng) → Mg(NO3)2 + NO + H2O", coefficients: ["3", "8", "3", "2", "4"], difficulty: 2 },
-            { id: 10, text: "Cu + HNO3 (đặc) → Cu(NO3)2 + NO2 + H2O", coefficients: ["1", "4", "1", "2", "2"], difficulty: 2 },
+            { id: 8, text: "Fe + H2SO4 → Fe2(SO4)3 + SO2 + H2O", coefficients: ["2", "6", "1", "3", "6"], difficulty: 2 },
+            { id: 9, text: "Mg + HNO3 → Mg(NO3)2 + NO + H2O", coefficients: ["3", "8", "3", "2", "4"], difficulty: 2 },
+            { id: 10, text: "Cu + HNO3 → Cu(NO3)2 + NO2 + H2O", coefficients: ["1", "4", "1", "2", "2"], difficulty: 2 },
             { id: 11, text: "Fe3O4 + HNO3 → Fe(NO3)3 + NO + H2O", coefficients: ["3", "28", "9", "1", "14"], difficulty: 3 },
             { id: 12, text: "Al + HNO3 → Al(NO3)3 + N2O + H2O", coefficients: ["8", "30", "8", "3", "15"], difficulty: 3 },
             { id: 13, text: "Zn + HNO3 → Zn(NO3)2 + NH4NO3 + H2O", coefficients: ["4", "10", "4", "1", "3"], difficulty: 3 },
             { id: 14, text: "FeS2 + O2 → Fe2O3 + SO2", coefficients: ["4", "11", "2", "8"], difficulty: 3 },
             { id: 15, text: "KMnO4 + HCl → KCl + MnCl2 + Cl2 + H2O", coefficients: ["2", "16", "2", "2", "5", "8"], difficulty: 3 },
             { id: 16, text: "FeS + HNO3 → Fe(NO3)3 + H2SO4 + NO + H2O", coefficients: ["1", "6", "1", "1", "3", "2"], difficulty: 4 },
-            { id: 17, text: "CuxSy + HNO3 → Cu(NO3)2 + H2SO4 + NO2 + H2O", coefficients: ["1", "2x+6y", "x", "y", "2x+6y", "x+3y"], difficulty: 4 },
+            { id: 17, text: "CuxSy + HNO3 → Cu(NO3)2 + H2SO4 + NO2 + H2O", coefficients: ["1", "4x+6y", "x", "y", "2x+6y", "2x+2y"], difficulty: 4 },
             { id: 18, text: "Fe + HNO3 → Fe(NO3)3 + NxOy + H2O", coefficients: ["5x-2y", "18x-6y", "5x-2y", "3", "9x-3y"], difficulty: 4 },
             { id: 19, text: "As2S3 + HNO3 + H2O → H3AsO4 + H2SO4 + NO", coefficients: ["3", "28", "4", "6", "9", "28"], difficulty: 4 },
-            { id: 20, text: "P + NH4ClO4 → H3PO4 + N2 + Cl2 + H2O", coefficients: ["10", "6", "10", "3", "3", "14"], difficulty: 4 }
+            { id: 20, text: "P + NH4ClO4 → H3PO4 + N2 + Cl2 + H2O", coefficients: ["8", "10", "8", "5", "5", "8"], difficulty: 4 }
         ];
 
         let seconds = 0;
         let timerInterval = null;
 
-        // Render Stars
         function getStarsHtml(count) {
             const colors = ['text-green-400', 'text-yellow-400', 'text-orange-400', 'text-red-500'];
             const activeColor = colors[count - 1];
@@ -95,24 +94,13 @@
             return html;
         }
 
-        // Format Formula
-        function formatFormula(text) {
-            return text.split(' ').map(part => {
-                if(part === '+' || part === '→') return `<span class="px-1 text-slate-400 font-bold">${part}</span>`;
-                // Xử lý chỉ số dưới
-                const formatted = part.replace(/(\d+|[xy])/g, '<sub>$1</sub>');
-                return `<span class="whitespace-nowrap flex items-baseline">${formatted}</span>`;
-            }).join(' ');
-        }
-
-        // Main Render Quiz
         const container = document.getElementById('quiz-container');
-        reactions.forEach((reaction, rIdx) => {
+        reactions.forEach((reaction) => {
             const card = document.createElement('div');
             card.className = "bg-white rounded-2xl shadow-sm border border-slate-200 p-6 transition-all hover:shadow-md";
             
             let inputIdx = 0;
-            const formulaParts = reaction.text.split(' ').map((part, pIdx) => {
+            const formulaParts = reaction.text.split(' ').map((part) => {
                 const isCompound = /^[A-Z(]/.test(part);
                 if(isCompound) {
                     const currentIdx = inputIdx++;
@@ -145,27 +133,17 @@
             container.appendChild(card);
         });
 
-        // Legend Render
         const legend = document.getElementById('legend');
-        const labels = ["Cơ bản", "Trung bình", "Nâng cao", "HSG"];
-        labels.forEach((label, i) => {
+        ["Cơ bản", "Trung bình", "Nâng cao", "HSG"].forEach((label, i) => {
             const item = document.createElement('div');
             item.className = "flex items-center gap-2";
             item.innerHTML = `${getStarsHtml(i+1)} <span class="ml-1">${label}</span>`;
             legend.appendChild(item);
         });
 
-        // Timer Logic
         const timerDisplay = document.getElementById('timer-display');
         const timerToggle = document.getElementById('timer-toggle');
         const timerReset = document.getElementById('timer-reset');
-
-        function updateTimer() {
-            seconds++;
-            const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-            const secs = (seconds % 60).toString().padStart(2, '0');
-            timerDisplay.innerText = `${mins}:${secs}`;
-        }
 
         timerToggle.onclick = () => {
             if(timerInterval) {
@@ -174,7 +152,12 @@
                 timerToggle.innerText = "Bắt đầu";
                 timerToggle.className = "px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-semibold shadow-md shadow-blue-200 hover:opacity-90 transition-all";
             } else {
-                timerInterval = setInterval(updateTimer, 1000);
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                    const secs = (seconds % 60).toString().padStart(2, '0');
+                    timerDisplay.innerText = `${mins}:${secs}`;
+                }, 1000);
                 timerToggle.innerText = "Dừng";
                 timerToggle.className = "px-4 py-1.5 bg-red-500 text-white rounded-lg text-sm font-semibold shadow-md shadow-red-200 hover:opacity-90 transition-all";
             }
@@ -189,7 +172,6 @@
             timerToggle.className = "px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-semibold shadow-md shadow-blue-200 hover:opacity-90 transition-all";
         };
 
-        // Check Answer Logic
         window.checkAnswer = (id) => {
             const reaction = reactions.find(r => r.id === id);
             const resultDiv = document.getElementById(`result-${id}`);
@@ -197,8 +179,10 @@
 
             reaction.coefficients.forEach((coef, idx) => {
                 const input = document.getElementById(`input-${id}-${idx}`);
-                const val = input.value.trim();
-                if(val === coef) {
+                const val = input.value.trim().replace(/\s+/g, '');
+                const expected = coef.replace(/\s+/g, '');
+                
+                if(val === expected) {
                     input.classList.remove('border-slate-200', 'border-red-400', 'bg-red-50', 'text-red-700');
                     input.classList.add('border-green-500', 'bg-green-50', 'text-green-700');
                 } else {
@@ -211,21 +195,10 @@
             resultDiv.classList.remove('hidden', 'text-green-600', 'text-red-500');
             if(isCorrect) {
                 resultDiv.classList.add('text-green-600');
-                resultDiv.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                    <span>Chính xác!</span>
-                `;
+                resultDiv.innerHTML = `<span>✔ Chính xác!</span>`;
             } else {
                 resultDiv.classList.add('text-red-500');
-                resultDiv.innerHTML = `
-                    <div class="flex flex-col md:flex-row md:items-center gap-1">
-                        <div class="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                            <span>Chưa đúng!</span>
-                        </div>
-                        <span class="text-slate-600 font-normal ml-2">Hệ số đúng: <span class="font-bold text-blue-600 tracking-widest">${reaction.coefficients.join(' : ')}</span></span>
-                    </div>
-                `;
+                resultDiv.innerHTML = `<span>✘ Sai rồi! Đáp án: ${reaction.coefficients.join(' : ')}</span>`;
             }
         };
     </script>
